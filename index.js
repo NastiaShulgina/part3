@@ -32,6 +32,13 @@ app.get('/api/persons', (_request, response) => {
     response.json(notes)
 })
 
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const note = notes.find(note => note.id === id)
+
+    note ? response.json(note) : response.status(404).end()
+})
+
 app.get('/info', (_request, response) => {
     const entriesCounter = (notes.length)
     response.send(`
