@@ -63,6 +63,10 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json({
             error: 'content missing'
         })
+    } if (notes.some(note => note.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
     }
 
     const note = {
