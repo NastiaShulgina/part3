@@ -36,13 +36,14 @@ let notes = [
     }
 ]
 
-// app.get('/', (_request, response) => {
-//     response.send('<h1>Phonebook backend</h1>')
-// })
-
-app.get('/api/persons', (_request, response) => {
+app.get('/', (_request, response) => {
     response.json(notes)
+    // response.send('<h1>Phonebook backend</h1>')
 })
+
+// app.get('/api/persons', (_request, response) => {
+//     response.json(notes)
+// })
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
