@@ -77,9 +77,7 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json({
             error: 'name must be unique'
         })
-    } else {
-        return response.json(body)
-    }
+    } 
 
     const note = {
         id: Math.floor(Math.random() * 100000),

@@ -8,9 +8,9 @@ Content-Type: application/json
 
 ###
 POST https://phonebook-3jbv.onrender.com/api/persons
-content-type: application/json
+Content-Type: application/json
 
 {
-    "name": "ABC",
-    "number": "+4407960402830"
+    "name": "Nastia",
+    "number": "300000"
 }
