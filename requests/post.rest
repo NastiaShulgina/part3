@@ -2,6 +2,15 @@ POST http://localhost:3001/api/persons/
 Content-Type: application/json
 
 {
-    "name": "Stacy Shulhlki",
-    "number": "123456789"
+    "name": "Staacy Shulhlhki",
+    "number": "12345678669"
+}
+
+###
+POST https://phonebook-3jbv.onrender.com/api/persons
+content-type: application/json
+
+{
+    "name": "ABC",
+    "number": "+4407960402830"
 }
