@@ -1,9 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-
 const morgan = require('morgan')
 const morganBody = require('morgan-body')
+// const mongoose = require('mongoose')
+const Note = require('./models/note')
 
 morganBody(app)
 
@@ -41,15 +43,18 @@ app.get('/', (_request, response) => {
     response.send('<h1>Phonebook backend</h1>')
 })
 
-app.get('/api/persons', (_request, response) => {
-    response.json(notes)
+app.get('/api/persons', (request, response) => {
+    console.log("get");
+    Note.find({}).then(persons => {
+        response.json(persons)
+        console.log(persons);
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const note = notes.find(note => note.id === id)
-
-    note ? response.json(note) : response.status(404).end()
+    Note.findById(request.params.id).then(note => {
+        response.json(note)
+    })
 })
 
 app.get('/info', (_request, response) => {
@@ -70,27 +75,25 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
+    console.log("body");
+
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'content missing'
         })
-    } if (notes.some(note => note.name === body.name)) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    } 
-
-    const note = {
-        id: Math.floor(Math.random() * 100000),
-        name: body.name,
-        number: body.number
     }
 
-    notes = notes.concat(note)
-    response.json(note)
+    const note = new Note({
+        name: body.name,
+        number: body.number,
+    })
+
+    note.save().then(savedNote => {
+        response.json(savedNote)
+    })
 })
 
-const PORT = 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
