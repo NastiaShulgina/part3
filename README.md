@@ -1,3 +1,3 @@
 # part3
 
-Link to the web application: [https://phonebook-3jbv.onrender.com/api/persons]
+Link to the web application: [https://phonebook-3jbv.onrender.com]
