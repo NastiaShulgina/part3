@@ -11,7 +11,30 @@ morganBody(app)
 
 morgan.token('postData', (req) => req.method === 'POST' && JSON.stringify(req.body))
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+}
+
 app.use(cors())
+app.use(requestLogger)
 app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status - :response-time ms :postData'))
@@ -51,10 +74,10 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     Note.findById(request.params.id).then(note => {
         response.json(note)
-    })
+    }).catch(error => next(error))
 })
 
 app.get('/info', (_request, response) => {
@@ -65,11 +88,12 @@ app.get('/info', (_request, response) => {
     `)
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    notes = notes.filter(note => note.id !== id)
-
-    response.status(204).json(notes)
+app.delete('/api/persons/:id', (request, response, next) => {
+    Note.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response) => {
@@ -92,6 +116,9 @@ app.post('/api/persons', (request, response) => {
         response.json(savedNote)
     })
 })
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
