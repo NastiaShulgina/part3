@@ -10,9 +10,9 @@ morganBody(app)
 morgan.token('postData', (req) => req.method === 'POST' && JSON.stringify(req.body))
 
 app.use(cors())
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status - :response-time ms :postData'))
-app.use(express.static('build'))
 
 let notes = [
     {
